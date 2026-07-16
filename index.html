@@ -1025,18 +1025,24 @@ function renderCard(){
 }
 function flipCard(){document.getElementById("flashInner").classList.toggle("flip")}
 async function markCard(known){
-  const c=cardS.list[cardS.i];
+
+  const c = cardS.list[cardS.i];
+
+  if(!c){
+    console.error("カード取得失敗",cardS);
+    return;
+  }
 
   if(known){
+
     const prevXp=P.xp;
 
     let lv=P.cardLv[c.id]?.lv||0;
-    lv++;
 
     const days=[1,3,7,30,90];
 
     P.cardLv[c.id]={
-      lv:lv,
+      lv:lv+1,
       next:addDays(new Date(),days[Math.min(lv,4)])
     };
 
@@ -1044,11 +1050,12 @@ async function markCard(known){
       P.known.push(c.id);
       P.xp+=3;
       cardS.newly++;
-    }
 
-    touchStreak();
-    toast("覚えた! 次回復習セット 🎴");
-    checkPromotion(prevXp);
+      touchStreak();
+      checkPromotion(prevXp);
+
+      toast("覚えた! ＋3 XP 🎴");
+    }
 
   }else{
 
@@ -1059,21 +1066,14 @@ async function markCard(known){
 
   }
 
+
   await saveP();
 
   cardS.i++;
 
-  if(cardS.i<cardS.list.length){
+  if(cardS.i < cardS.list.length){
     renderCard();
   }else{
-    const all=CARDS.filter(x=>x.deck===cardS.deck.id);
-    const done=all.every(x=>P.known.includes(x.id));
-
-    toast(done
-      ?"デッキ完全制覇!おめでとう 🏆"
-      :"1周完了!「まだ」のカードをまた回そう 🔁"
-    );
-
     exitCards();
   }
 }
