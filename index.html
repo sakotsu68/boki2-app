@@ -1027,6 +1027,22 @@ async function markCard(known){
   alert("①開始");
   const c=cardS.list[cardS.i];
   alert("②カード取得");
+　if(known&&!P.known.includes(c.id)){
+   alert("③覚えた処理開始");
+
+   const prevXp=P.xp;
+   P.known.push(c.id);
+   P.xp+=3;
+
+   alert("④XP更新");
+
+   cardS.newly++;
+   touchStreak();
+   
+   alert("⑤touchStreak後");
+  }
+
+  
 if(known){
 
   const prevXp=P.xp;
