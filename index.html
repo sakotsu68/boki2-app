@@ -515,7 +515,7 @@ details.acc .body li{margin-bottom:5px}
     </div>
     <div class="card-actions">
       <button class="btn ghost" onclick="markCard(false)">まだ 🤔</button>
-      <button class="btn" onclick="markCard(true); alert('B')">覚えた! ✅</button>
+      <button class="btn" onclick="markCard(true)">覚えた! ✅</button>
     </div>
     <button class="btn ghost" style="font-size:13px;padding:11px" onclick="exitCards()">デッキ選択に戻る</button>
   </div>
@@ -1025,39 +1025,36 @@ function renderCard(){
 }
 function flipCard(){document.getElementById("flashInner").classList.toggle("flip")}
 async function markCard(known){
-  alert("①開始");
   const c=cardS.list[cardS.i];
-  alert("②カード取得");
-  alert("P.known=" + JSON.stringify(P.known));
-alert("known=" + known);
-alert("c.id=" + c.id);
-　if(known&&!P.known.includes(c.id)){
-   alert("③覚えた処理開始");
 
-   const prevXp=P.xp;
-   P.known.push(c.id);
-   P.xp+=3;
+  if(known&&!P.known.includes(c.id)){
+    const prevXp=P.xp;
 
-   alert("④XP更新");
+    P.known.push(c.id);
+    P.xp+=3;
+    cardS.newly++;
 
-   cardS.newly++;
-   touchStreak();
-   alert("⑥保存前");
+    touchStreak();
+    checkPromotion(prevXp);
 
-await saveP();
-
-alert("⑦保存後");
-
-cardS.i++;
-
-alert("⑧次カード");
-
-renderCard();
-
-alert("⑨表示後");
-   
-   alert("⑤touchStreak後");
+    toast("覚えた! ＋3 XP 🎴");
   }
+
+  if(!known){
+    P.known=P.known.filter(id=>id!==c.id);
+  }
+
+  await saveP();
+
+  cardS.i++;
+
+  if(cardS.i<cardS.list.length){
+    renderCard();
+  }else{
+    exitCards();
+  }
+}
+  
 
   
 if(known){
