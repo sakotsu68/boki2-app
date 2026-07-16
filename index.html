@@ -1027,21 +1027,36 @@ function flipCard(){document.getElementById("flashInner").classList.toggle("flip
 async function markCard(known){
   const c=cardS.list[cardS.i];
 
-  if(known&&!P.known.includes(c.id)){
+  if(known){
     const prevXp=P.xp;
 
-    P.known.push(c.id);
-    P.xp+=3;
-    cardS.newly++;
+    let lv=P.cardLv[c.id]?.lv||0;
+    lv++;
+
+    const days=[1,3,7,30,90];
+
+    P.cardLv[c.id]={
+      lv:lv,
+      next:addDays(new Date(),days[Math.min(lv,4)])
+    };
+
+    if(!P.known.includes(c.id)){
+      P.known.push(c.id);
+      P.xp+=3;
+      cardS.newly++;
+    }
 
     touchStreak();
+    toast("覚えた! 次回復習セット 🎴");
     checkPromotion(prevXp);
 
-    toast("覚えた! ＋3 XP 🎴");
-  }
+  }else{
 
-  if(!known){
-    P.known=P.known.filter(id=>id!==c.id);
+    P.cardLv[c.id]={
+      lv:0,
+      next:addDays(new Date(),1)
+    };
+
   }
 
   await saveP();
@@ -1051,63 +1066,14 @@ async function markCard(known){
   if(cardS.i<cardS.list.length){
     renderCard();
   }else{
-    exitCards();
-  }
-}
-  
-
-  
-if(known){
-
-  const prevXp=P.xp;
-
-  let lv=P.cardLv[c.id]?.lv||0;
-  lv++;
-
-  const days=[
-    1,
-    3,
-    7,
-    30,
-    90
-  ];
-
-  P.cardLv[c.id]={
-    lv:lv,
-    next:addDays(new Date(),days[Math.min(lv,4)])
-  };
-
-  if(!P.known.includes(c.id)){
-    P.known.push(c.id);
-  }
-
-  P.xp+=3;
-  cardS.newly++;
-
-  touchStreak();
-
-  toast("覚えた! 次回復習セット 🎴");
-
-  checkPromotion(prevXp);
-}
-
-
-if(!known){
-
-  P.cardLv[c.id]={
-    lv:0,
-    next:addDays(new Date(),1)
-  };
-
-}
- 
-  await saveP();
-  cardS.i++;
-  if(cardS.i<cardS.list.length)renderCard();
-  else{
     const all=CARDS.filter(x=>x.deck===cardS.deck.id);
     const done=all.every(x=>P.known.includes(x.id));
-    toast(done?"デッキ完全制覇!おめでとう 🏆":"1周完了!「まだ」のカードをまた回そう 🔁");
+
+    toast(done
+      ?"デッキ完全制覇!おめでとう 🏆"
+      :"1周完了!「まだ」のカードをまた回そう 🔁"
+    );
+
     exitCards();
   }
 }
