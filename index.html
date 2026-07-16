@@ -1027,6 +1027,9 @@ async function markCard(known){
   alert("①開始");
   const c=cardS.list[cardS.i];
   alert("②カード取得");
+  alert("P.known=" + JSON.stringify(P.known));
+alert("known=" + known);
+alert("c.id=" + c.id);
 　if(known&&!P.known.includes(c.id)){
    alert("③覚えた処理開始");
 
