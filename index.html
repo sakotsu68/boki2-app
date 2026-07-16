@@ -931,6 +931,7 @@ async function answer(ok,btn,q){
   stamp(ok);
   const prevXp=P.xp;
   touchStreak();
+  
   P.total++;P.cats[q.cat][1]++;
   if(ok){
     quiz.score++;quiz.combo++;P.correct++;P.cats[q.cat][0]++;
@@ -1041,6 +1042,19 @@ alert("c.id=" + c.id);
 
    cardS.newly++;
    touchStreak();
+   alert("⑥保存前");
+
+await saveP();
+
+alert("⑦保存後");
+
+cardS.i++;
+
+alert("⑧次カード");
+
+renderCard();
+
+alert("⑨表示後");
    
    alert("⑤touchStreak後");
   }
