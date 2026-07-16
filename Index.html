@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>簿記2級 合格帳簿</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#22201B;
+  --paper:#F5F4EC;
+  --ledger-green:#1E4A3C;
+  --ledger-green-deep:#12332A;
+  --rule-blue:#7FA8C9;
+  --stamp-red:#C6392C;
+  --gold:#B8912E;
+  --card:#FFFFFF;
+  --muted:#7A776E;
+  --ok-bg:#EAF3EC;
+  --ng-bg:#F9ECEA;
+  --radius:14px;
+  --shadow:0 2px 10px rgba(30,50,40,.10);
+  --display:'Shippori Mincho',serif;
+  --body:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:var(--body);color:var(--ink);
+  background:var(--paper);
+  background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(127,168,201,.22) 27px,rgba(127,168,201,.22) 28px);
+  font-size:15px;line-height:1.65;
+}
+#app{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:76px;position:relative}
+/* ===== ヘッダー ===== */
+header{
+  background:var(--ledger-green);color:#F2EFE4;
+  padding:14px 18px 12px;
+  border-bottom:3px double var(--gold);
+  position:sticky;top:0;z-index:20;
+}
+header .title{font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:.14em}
+header .sub{font-size:11px;letter-spacing:.28em;color:#C9C2A6;margin-top:1px}
+/* ===== 下部タブ ===== */
+nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;background:var(--ledger-green-deep);
+  display:flex;z-index:30;border-top:2px solid var(--gold);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+nav button{
+  flex:1;background:none;border:none;color:#9DB3A6;
+  font-family:var(--body);font-size:11px;font-weight:700;
+  padding:9px 0 8px;cursor:pointer;letter-spacing:.08em;
+}
+nav button .ic{display:block;font-size:19px;margin-bottom:2px}
+nav button.active{color:#F2EFE4}
+nav button.active .ic{transform:translateY(-1px)}
+/* ===== 共通 ===== */
+.page{display:none;padding:18px 16px 24px;animation:fade .25s ease}
+.page.show{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px;border:1px solid rgba(30,74,60,.10)}
+h2.sec{
+  font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:.12em;
+  color:var(--ledger-green);margin:6px 2px 12px;
+  display:flex;align-items:center;gap:8px;
+}
+h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--ledger-green),transparent)}
+.btn{
+  display:block;width:100%;border:none;border-radius:12px;
+  background:var(--ledger-green);color:#F2EFE4;
+  font-family:var(--body);font-weight:700;font-size:15px;letter-spacing:.1em;
+  padding:14px;cursor:pointer;transition:transform .08s;
+}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:#fff;color:var(--ledger-green);border:1.5px solid var(--ledger-green)}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:99px;letter-spacing:.06em}
+.tag.shou{background:#E4EEF6;color:#2C5A82}
+.tag.kou{background:#F0E9DC;color:#7A5B12}
+.tag.chi{background:#E8EFE9;color:#2C6045}
+.tag.rev{background:#F6E5E3;color:var(--stamp-red)}
+/* ===== ホーム ===== */
+.level-card{
+  background:linear-gradient(150deg,var(--ledger-green) 0%,var(--ledger-green-deep) 100%);
+  color:#F2EFE4;border-radius:var(--radius);padding:18px;margin-bottom:14px;
+  position:relative;overflow:hidden;box-shadow:var(--shadow);
+}
+.level-card::before{
+  content:"勘定元帳";position:absolute;right:-8px;top:-14px;
+  font-family:var(--display);font-size:64px;font-weight:800;color:rgba(255,255,255,.05);
+  writing-mode:vertical-rl;letter-spacing:.1em;
+}
+.level-card .lv-label{font-size:11px;letter-spacing:.24em;color:#C9C2A6}
+.level-card .lv-name{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:.1em;margin:2px 0 10px}
+.xpbar{height:8px;background:rgba(255,255,255,.18);border-radius:99px;overflow:hidden}
+.xpbar>div{height:100%;background:linear-gradient(90deg,var(--gold),#E3C36A);border-radius:99px;transition:width .6s ease}
+.xp-num{font-size:11px;color:#C9C2A6;margin-top:6px;display:flex;justify-content:space-between}
+.stat-row{display:flex;gap:10px;margin-bottom:14px}
+.stat{flex:1;background:#fff;border-radius:12px;padding:12px 8px;text-align:center;box-shadow:var(--shadow);border:1px solid rgba(30,74,60,.1)}
+.stat .num{font-family:var(--display);font-size:21px;font-weight:800;color:var(--ledger-green)}
+.stat .lbl{font-size:10.5px;color:var(--muted);letter-spacing:.06em}
+.cat-btn{
+  display:flex;align-items:center;gap:12px;width:100%;
+  background:#fff;border:1px solid rgba(30,74,60,.14);border-radius:12px;
+  padding:13px 14px;margin-bottom:10px;cursor:pointer;text-align:left;
+  font-family:var(--body);box-shadow:var(--shadow);transition:transform .08s;
+}
+.cat-btn:active{transform:scale(.98)}
+.cat-btn .em{font-size:24px}
+.cat-btn .t{font-weight:700;font-size:14.5px;color:var(--ink)}
+.cat-btn .d{font-size:11.5px;color:var(--muted)}
+.cat-btn .cnt{margin-left:auto;font-family:var(--display);font-weight:800;color:var(--ledger-green);font-size:13px;white-space:nowrap}
+/* ===== クイズ ===== */
+.q-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.q-prog{font-family:var(--display);font-weight:800;color:var(--ledger-green);font-size:14px;letter-spacing:.08em}
+.combo{font-size:12px;font-weight:700;color:var(--stamp-red)}
+.progressline{height:5px;background:rgba(30,74,60,.12);border-radius:99px;overflow:hidden;margin-bottom:14px}
+.progressline>div{height:100%;background:var(--ledger-green);transition:width .3s}
+.q-text{font-size:15px;font-weight:500;margin-bottom:14px;white-space:pre-line}
+.choice{
+  display:block;width:100%;text-align:left;background:#fff;
+  border:1.5px solid rgba(30,74,60,.2);border-radius:11px;
+  padding:12px 13px;margin-bottom:9px;font-family:var(--body);font-size:13.5px;
+  cursor:pointer;line-height:1.55;transition:border-color .15s,background .15s;
+}
+.choice:active{background:#F0EFE6}
+.choice.correct{background:var(--ok-bg);border-color:#3E7D57;font-weight:700}
+.choice.correct::before{content:"✓ ";font-weight:800;color:#3E7D57}
+.choice.wrong{background:var(--ng-bg);border-color:var(--stamp-red)}
+.choice.wrong::before{content:"✗ ";font-weight:800;color:var(--stamp-red)}
+.choice.dim{opacity:.45}
+.choice:disabled{cursor:default}
+.exp{
+  background:#FBFAF3;border-left:4px solid var(--gold);
+  border-radius:0 10px 10px 0;padding:12px 13px;font-size:13px;
+  margin:4px 0 14px;white-space:pre-line;animation:fade .3s;
+}
+.exp b{color:var(--ledger-green)}
+.notelink{
+  display:inline-block;margin-top:10px;background:#fff;
+  border:1.5px solid var(--gold);color:#8A6D1F;border-radius:99px;
+  padding:7px 16px;font-family:var(--body);font-size:12px;font-weight:700;
+  cursor:pointer;letter-spacing:.04em;transition:transform .08s;
+}
+.notelink:active{transform:scale(.95)}
+details.acc.hl{border-color:var(--gold);animation:hlpulse 1.8s ease}
+@keyframes hlpulse{0%{box-shadow:0 0 0 8px rgba(184,145,46,.4)}100%{box-shadow:var(--shadow)}}
+.stamp.promo{border-color:var(--gold);color:#8A6D1F;box-shadow:0 0 0 3px rgba(184,145,46,.2) inset}
+.confetti{position:fixed;top:-40px;z-index:70;font-size:22px;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(112vh) rotate(560deg);opacity:.5}}
+.wrong-item{
+  border-top:1px dashed rgba(30,74,60,.2);padding:10px 2px 8px;font-size:12.5px;
+}
+.wrong-item .wq{color:var(--ink);display:block;margin-bottom:2px}
+.wrong-item .notelink{margin-top:4px;padding:5px 13px;font-size:11.5px}
+/* 判子スタンプ */
+.stamp-wrap{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:50;pointer-events:none}
+.stamp{
+  width:150px;height:150px;border:6px solid var(--stamp-red);border-radius:50%;
+  color:var(--stamp-red);font-family:var(--display);font-weight:800;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transform:rotate(-12deg);background:rgba(255,255,255,.6);
+  box-shadow:0 0 0 3px rgba(198,57,44,.15) inset;
+}
+.stamp .big{font-size:38px;letter-spacing:.1em}
+.stamp .small{font-size:12px;letter-spacing:.3em;border-top:2px solid var(--stamp-red);padding-top:4px;margin-top:4px}
+.stamp.miss{border-color:#5B6770;color:#5B6770;box-shadow:0 0 0 3px rgba(91,103,112,.15) inset}
+@keyframes slam{
+  0%{transform:scale(2.6) rotate(-12deg);opacity:0}
+  55%{transform:scale(.92) rotate(-12deg);opacity:1}
+  75%{transform:scale(1.06) rotate(-12deg)}
+  100%{transform:scale(1) rotate(-12deg);opacity:1}
+}
+.stamp.go{animation:slam .45s cubic-bezier(.2,.9,.3,1.2) forwards}
+/* 結果 */
+.result-score{text-align:center;padding:8px 0 4px}
+.result-score .big{font-family:var(--display);font-size:46px;font-weight:800;color:var(--ledger-green)}
+.result-score .big span{font-size:20px;color:var(--muted)}
+.gain{text-align:center;color:var(--gold);font-weight:700;font-size:14px;margin:6px 0 12px}
+/* ===== まとめ ===== */
+details.acc{background:#fff;border-radius:12px;box-shadow:var(--shadow);margin-bottom:10px;border:1px solid rgba(30,74,60,.1);overflow:hidden}
+details.acc summary{
+  list-style:none;cursor:pointer;padding:14px;font-weight:700;font-size:14px;
+  display:flex;align-items:center;gap:10px;color:var(--ledger-green);
+}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:"＋";margin-left:auto;color:var(--muted);font-weight:400}
+details.acc[open] summary::after{content:"－"}
+details.acc .body{padding:0 15px 15px;font-size:13px}
+details.acc .body h4{font-size:13px;color:var(--stamp-red);margin:12px 0 4px;letter-spacing:.06em}
+details.acc .body p{margin-bottom:8px}
+details.acc .body ul{padding-left:18px;margin-bottom:8px}
+details.acc .body li{margin-bottom:5px}
+.formula{background:#F3F6F1;border-radius:8px;padding:9px 11px;font-size:12.5px;margin:6px 0;font-weight:500}
+.kamoku{display:flex;justify-content:space-between;border-bottom:1px dashed rgba(30,74,60,.2);padding:5px 2px;font-size:12.5px}
+.kamoku b{color:var(--ledger-green)}
+/* ===== 暗記カード ===== */
+.flash{perspective:1000px;height:240px;margin-bottom:12px;cursor:pointer}
+.flash-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flash-inner.flip{transform:rotateY(180deg)}
+.flash-face{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background:#fff;border-radius:14px;box-shadow:var(--shadow);
+  border:1.5px solid rgba(30,74,60,.18);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:22px;text-align:center;overflow:auto;
+}
+.flash-face.front p{font-family:var(--display);font-weight:800;font-size:19px;color:var(--ledger-green);line-height:1.5}
+.flash-face.back{transform:rotateY(180deg);background:#FBFAF3;border-color:var(--gold)}
+.flash-face.back p{font-size:13.5px;text-align:left;white-space:pre-line;line-height:1.7}
+.flash-hint{font-size:10.5px;color:var(--muted);letter-spacing:.18em;margin-bottom:12px}
+.card-actions{display:flex;gap:10px;margin-bottom:10px}
+.card-actions .btn{margin:0}
+.deck-done{font-size:11.5px;color:var(--gold);font-weight:700}
+/* ===== 成績 ===== */
+.cat-stat{margin-bottom:12px}
+.cat-stat .row{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:4px}
+.cat-stat .bar{height:8px;background:rgba(30,74,60,.1);border-radius:99px;overflow:hidden}
+.cat-stat .bar>div{height:100%;background:var(--ledger-green);border-radius:99px;transition:width .5s}
+.small-note{font-size:11px;color:var(--muted);text-align:center;margin-top:10px}
+.toast{
+  position:fixed;left:50%;bottom:90px;transform:translateX(-50%);
+  background:var(--ledger-green-deep);color:#F2EFE4;font-size:13px;font-weight:700;
+  padding:10px 20px;border-radius:99px;z-index:60;box-shadow:var(--shadow);
+  opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;
+}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <div class="title">簿記2級 合格帳簿</div>
+  <div class="sub">BOKI GRADE 2 — STUDY LEDGER</div>
+</header>
+
+<!-- ============ ホーム ============ -->
+<div class="page show" id="page-home">
+  <div class="level-card">
+    <div class="lv-label">現在の役職</div>
+    <div class="lv-name" id="lvName">経理見習い</div>
+    <div class="xpbar"><div id="xpBar" style="width:0%"></div></div>
+    <div class="xp-num"><span id="xpNow">0 XP</span><span id="xpNext">次の昇進まで 100 XP</span></div>
+  </div>
+  <div class="stat-row">
+    <div class="stat"><div class="num" id="stDays">0</div><div class="lbl">連続学習日</div></div>
+    <div class="stat"><div class="num" id="stTotal">0</div><div class="lbl">解答数</div></div>
+    <div class="stat"><div class="num" id="stRate">-</div><div class="lbl">正答率</div></div>
+    <div class="stat"><div class="num" id="stStreak">0</div><div class="lbl">連続正解</div></div>
+  </div>
+  <h2 class="sec">仕訳帳を開く</h2>
+  <button class="cat-btn" onclick="startQuiz('shou')"><span class="em">🏪</span><span><span class="t">商業簿記・仕訳</span><br><span class="d">第1問対策｜頻出仕訳パターン</span></span><span class="cnt" id="cntShou"></span></button>
+  <button class="cat-btn" onclick="startQuiz('kou')"><span class="em">🏭</span><span><span class="t">工業簿記・原価計算</span><br><span class="d">第4・5問対策｜計算問題</span></span><span class="cnt" id="cntKou"></span></button>
+  <button class="cat-btn" onclick="startQuiz('chi')"><span class="em">📖</span><span><span class="t">知識○×チェック</span><br><span class="d">スキマ時間のサクサク復習</span></span><span class="cnt" id="cntChi"></span></button>
+  <button class="cat-btn" onclick="startQuiz('rev')"><span class="em">🔁</span><span><span class="t">間違えた問題を復習</span><br><span class="d">苦手つぶしで得点UP</span></span><span class="cnt" id="cntRev">0問</span></button>
+  <h2 class="sec">知識をためる</h2>
+  <button class="cat-btn" onclick="showPage('cards')"><span class="em">🎴</span><span><span class="t">暗記カード</span><br><span class="d">タップでめくって知識インプット</span></span><span class="cnt" id="cntCards"></span></button>
+</div>
+
+<!-- ============ クイズ ============ -->
+<div class="page" id="page-quiz">
+  <div class="q-head">
+    <span class="q-prog" id="qProg">第 1 問 / 10</span>
+    <span class="combo" id="qCombo"></span>
+  </div>
+  <div class="progressline"><div id="qBar" style="width:0%"></div></div>
+  <div class="card">
+    <span class="tag" id="qTag">商業簿記</span>
+    <p class="q-text" id="qText"></p>
+    <div id="qChoices"></div>
+    <div class="exp" id="qExp" style="display:none"></div>
+    <button class="btn" id="qNext" style="display:none" onclick="nextQ()">次の問題へ ▶</button>
+  </div>
+  <button class="btn ghost" onclick="quitQuiz()" style="font-size:13px;padding:11px">ホームに戻る</button>
+</div>
+
+<!-- ============ 結果 ============ -->
+<div class="page" id="page-result">
+  <div class="card">
+    <h2 class="sec" style="margin-top:0">本日の決算報告</h2>
+    <div class="result-score"><span class="big" id="rScore">8<span> / 10</span></span></div>
+    <p class="gain" id="rGain">＋80 XP 獲得！</p>
+    <p style="text-align:center;font-size:13.5px" id="rMsg"></p>
+    <div id="rWrong"></div>
+  </div>
+  <button class="btn" onclick="retrySame()">もう一度挑戦する</button>
+  <div style="height:10px"></div>
+  <button class="btn ghost" onclick="goHome()">ホームに戻る</button>
+</div>
+
+<!-- ============ まとめ ============ -->
+<div class="page" id="page-notes">
+  <h2 class="sec">試験のきほん</h2>
+  <details class="acc" open id="note-exam">
+    <summary>🎯 日商簿記2級 試験の全体像</summary>
+    <div class="body">
+      <p><b>試験時間90分・100点満点・70点で合格。</b>ネット試験(CBT)なら随時受験でき、統一試験(ペーパー)は年3回です。</p>
+      <h4>配点の目安(全5問)</h4>
+      <ul>
+        <li><b>第1問(20点)</b>：商業簿記の仕訳5題 — 最重要の得点源!</li>
+        <li><b>第2問(20点)</b>：商業簿記の個別論点(連結・株主資本等変動計算書・勘定記入など)</li>
+        <li><b>第3問(20点)</b>：決算(精算表・財務諸表の作成)</li>
+        <li><b>第4問(28点)</b>：工業簿記(仕訳＋費目別・部門別・個別/総合原価計算など)</li>
+        <li><b>第5問(12点)</b>：標準原価計算・直接原価計算・CVP分析</li>
+      </ul>
+      <p>👉 <b>工業簿記だけで40点</b>。パターンが決まっているので工業簿記を得意にするのが合格の近道です。</p>
+    </div>
+  </details>
+  <details class="acc" id="note-books">
+    <summary>📚 教材・問題集ガイド</summary>
+    <div class="body">
+      <p>※2021年度のCBT化以降、<b>本物の過去問は非公開</b>になりました。市販の「過去問題集」に代わって<b>予想問題集・網羅型問題集</b>が主流です。このアプリの問題も出題形式に沿ったオリジナル問題です。</p>
+      <h4>定番テキスト</h4>
+      <ul>
+        <li><b>みんなが欲しかった! 簿記の教科書/問題集</b>(TAC)：フルカラーで独学の定番</li>
+        <li><b>スッキリわかる 日商簿記2級</b>(TAC)：テキスト＋問題一体型でコンパクト</li>
+        <li><b>パブロフ流でみんな合格</b>(翔泳社)：4コマ漫画で仕訳の理由が分かる。<b>公式仕訳アプリがスマホ学習と相性抜群</b></li>
+      </ul>
+      <h4>直前対策</h4>
+      <ul>
+        <li>TAC「直前予想模試」/ ネットスクール「ラストスパート模試」など、本試験形式の模試を2〜3回分</li>
+        <li>ネット試験受験なら、各社の<b>模擬試験プログラム(PC/スマホで解く形式)</b>を必ず体験しておく</li>
+      </ul>
+      <h4>無料で使えるもの</h4>
+      <ul>
+        <li><b>CPAラーニング</b>：講義動画・テキスト・模試が無料</li>
+        <li><b>YouTube(ふくしままさゆき さん等)</b>：理解重視の講義で通勤学習に◎</li>
+      </ul>
+      <p class="small-note" style="text-align:left">最新の試験日程・出題区分は商工会議所の公式サイトで確認してくださいね。</p>
+    </div>
+  </details>
+
+  <h2 class="sec">商業簿記 要点ノート</h2>
+  <details class="acc" id="note-shiwake">
+    <summary>✒️ 頻出仕訳パターン10選</summary>
+    <div class="body">
+      <div class="kamoku"><span>クレジット売上</span><b>手数料を販売時 or 入金時に計上</b></div>
+      <div class="kamoku"><span>電子記録債権/債務</span><b>手形とほぼ同じ扱い(譲渡・割引可)</b></div>
+      <div class="kamoku"><span>貸倒引当金</span><b>差額補充法：設定額−残高＝繰入額</b></div>
+      <div class="kamoku"><span>200%定率法</span><b>償却率＝1/耐用年数×200%</b></div>
+      <div class="kamoku"><span>圧縮記帳(直接減額)</span><b>固定資産圧縮損 / 固定資産</b></div>
+      <div class="kamoku"><span>ファイナンス・リース</span><b>リース資産 / リース債務</b></div>
+      <div class="kamoku"><span>満期保有目的債券</span><b>償却原価法：差額を毎期均等に加算</b></div>
+      <div class="kamoku"><span>外貨建取引</span><b>決算時レートで換算→為替差損益</b></div>
+      <div class="kamoku"><span>剰余金の配当</span><b>準備金積立＝配当×1/10(上限:資本金×1/4)</b></div>
+      <div class="kamoku"><span>税効果会計</span><b>繰延税金資産 / 法人税等調整額</b></div>
+    </div>
+  </details>
+  <details class="acc" id="note-renketsu">
+    <summary>🏢 連結会計のツボ</summary>
+    <div class="body">
+      <ul>
+        <li><b>投資と資本の相殺消去</b>：子会社株式と子会社の資本を相殺。差額が<b>のれん</b>(借方)または負ののれん発生益(貸方)</li>
+        <li><b>のれんは20年以内に定額法などで償却</b>(のれん償却/のれん)</li>
+        <li><b>非支配株主持分</b>：100%子会社でない場合、子会社資本×非支配株主の持分割合</li>
+        <li><b>成果連結</b>：親子間の売上と仕入、債権と債務を相殺。未実現利益(期末商品・土地)も消去</li>
+        <li>ダウンストリーム(親→子)は全額消去、アップストリーム(子→親)は非支配株主にも負担させる</li>
+      </ul>
+    </div>
+  </details>
+  <details class="acc" id="note-yuka">
+    <summary>💹 有価証券の4分類まとめ</summary>
+    <div class="body">
+      <div class="kamoku"><span>売買目的有価証券</span><b>時価評価・差額はP/L(評価損益)</b></div>
+      <div class="kamoku"><span>満期保有目的債券</span><b>償却原価法(時価評価しない)</b></div>
+      <div class="kamoku"><span>子会社株式・関連会社株式</span><b>取得原価のまま</b></div>
+      <div class="kamoku"><span>その他有価証券</span><b>時価評価・差額は純資産(評価差額金)</b></div>
+      <p style="margin-top:10px">👉 引っかけの定番は「<b>その他有価証券の差額を損益にしてしまう</b>」パターン。その他有価証券評価差額金は純資産の部で、翌期首に振り戻し(洗替法)ます。</p>
+    </div>
+  </details>
+  <details class="acc" id="note-shihon">
+    <summary>🏛️ 純資産(資本金・剰余金)のルール</summary>
+    <div class="body">
+      <h4>株式発行</h4>
+      <ul>
+        <li>資本金組入は<b>原則:払込全額</b>／容認(最低額):<b>払込額の1/2</b>(残りは資本準備金)</li>
+        <li>発行費用:設立時→<b>創立費</b>、増資時→<b>株式交付費</b></li>
+        <li>申込証拠金は「株式申込証拠金」＋<b>別段預金</b>で処理し、払込期日に振替</li>
+      </ul>
+      <h4>剰余金の配当</h4>
+      <div class="formula">準備金積立額 ＝ 配当×1/10(上限:資本金×1/4−準備金合計)…小さい方!</div>
+      <p>繰越利益剰余金からの配当→利益準備金、その他資本剰余金からの配当→資本準備金を積み立てます。純資産の一年間の動きは<b>株主資本等変動計算書</b>にまとめられます(第2問頻出)。</p>
+    </div>
+  </details>
+  <details class="acc" id="note-ginkou">
+    <summary>🏦 銀行勘定調整表:仕訳する?しない?</summary>
+    <div class="body">
+      <h4>当社側の調整 → 修正仕訳が必要!</h4>
+      <ul>
+        <li><b>連絡未達</b>(入金・引落しの未記帳)</li>
+        <li><b>誤記入</b>(金額の書き間違い)</li>
+        <li><b>未渡小切手</b>:作ったが渡していない →(借)当座預金／(貸)買掛金・未払金</li>
+      </ul>
+      <h4>銀行側の調整 → 仕訳不要!</h4>
+      <ul>
+        <li><b>未取付小切手</b>:渡したが銀行に未呈示 → 銀行残高から減算するだけ</li>
+        <li><b>時間外預入</b>:締め後の入金 → 銀行残高に加算するだけ</li>
+      </ul>
+      <p>👉「<b>未渡し=仕訳あり／未取付=仕訳なし</b>」。名前が似ているので対で暗記しましょう。</p>
+    </div>
+  </details>
+
+  <h2 class="sec">工業簿記 公式集</h2>
+  <details class="acc" id="note-himoku">
+    <summary>🔄 勘定の流れと費目別計算</summary>
+    <div class="body">
+      <div class="formula">材料・賃金・経費 →(直接費)→ 仕掛品 → 製品 → 売上原価<br>　　　　　　　　→(間接費)→ 製造間接費 →配賦→ 仕掛品</div>
+      <ul>
+        <li><b>直接費</b>＝どの製品に使ったか分かる(素材・買入部品・直接工の直接作業賃金)</li>
+        <li><b>間接費</b>＝分からない(工場消耗品・間接工賃金・工場の減価償却費など)→ 製造間接費へ</li>
+        <li>予定価格・予定賃率を使うと差異が発生:<b>実際が多ければ不利差異(借方)</b></li>
+        <li>部門別:<b>直接配賦法</b>は補助部門間のやり取りを無視、<b>相互配賦法</b>は考慮</li>
+        <li>本社工場会計:工場にない勘定は<b>「本社」勘定</b>で代用(本社側は「工場」勘定)</li>
+      </ul>
+    </div>
+  </details>
+  <details class="acc" id="note-sai">
+    <summary>🧮 差異分析の公式</summary>
+    <div class="body">
+      <div class="formula">材料消費価格差異 ＝ (予定単価 − 実際単価) × 実際消費量</div>
+      <div class="formula">賃率差異 ＝ (予定賃率 − 実際賃率) × 実際作業時間</div>
+      <div class="formula">価格差異 ＝ (標準単価 − 実際単価) × 実際消費量</div>
+      <div class="formula">数量差異 ＝ (標準消費量 − 実際消費量) × 標準単価</div>
+      <div class="formula">予算差異 ＝ 予算許容額 − 実際発生額</div>
+      <div class="formula">操業度差異 ＝ (実際操業度 − 基準操業度) × 固定費率</div>
+      <p>👉 答えが<b>マイナスなら不利差異(借方差異)</b>、プラスなら有利差異(貸方差異)。</p>
+    </div>
+  </details>
+  <details class="acc" id="note-cvp">
+    <summary>📈 CVP分析・直接原価計算</summary>
+    <div class="body">
+      <div class="formula">貢献利益 ＝ 売上高 − 変動費</div>
+      <div class="formula">貢献利益率 ＝ 貢献利益 ÷ 売上高</div>
+      <div class="formula">損益分岐点売上高 ＝ 固定費 ÷ 貢献利益率</div>
+      <div class="formula">目標利益達成売上高 ＝ (固定費 ＋ 目標利益) ÷ 貢献利益率</div>
+      <div class="formula">安全余裕率 ＝ (売上高 − 損益分岐点売上高) ÷ 売上高</div>
+      <p>直接原価計算では<b>固定製造原価を期間原価</b>として全額費用処理。全部原価計算との営業利益の差は「固定費が在庫に含まれるか」で説明できます。</p>
+    </div>
+  </details>
+  <details class="acc" id="note-sougou">
+    <summary>⚗️ 総合原価計算の手順</summary>
+    <div class="body">
+      <ul>
+        <li><b>材料費(始点投入)</b>：完成品も月末仕掛品も100%負担 → 数量比で按分</li>
+        <li><b>加工費</b>：月末仕掛品は<b>完成品換算量(数量×進捗度)</b>で按分</li>
+        <li><b>平均法</b>：(月初＋当月投入)を合計してから按分</li>
+        <li><b>先入先出法</b>：月初分はそのまま完成品へ。当月投入分だけで月末仕掛品を計算</li>
+        <li><b>正常仕損(終点発生)</b>：完成品のみ負担 ／ <b>定点が月末仕掛品より前</b>：両者負担</li>
+      </ul>
+    </div>
+  </details>
+
+  <h2 class="sec">学習のコツ</h2>
+  <details class="acc" id="note-plan">
+    <summary>📱 スマホ学習おすすめプラン(3ヶ月)</summary>
+    <div class="body">
+      <h4>1ヶ月目：インプット</h4>
+      <p>通勤・休憩中に講義動画(CPAラーニング等)＋このアプリの○×チェック。商業→工業の順で1周。</p>
+      <h4>2ヶ月目：仕訳の反復</h4>
+      <p>第1問の仕訳は毎日10問!このアプリ＋仕訳アプリで「見た瞬間に手が動く」まで反復。工業簿記は公式集を見ながら計算問題。</p>
+      <h4>3ヶ月目：本試験形式</h4>
+      <p>模試を時間を計って解く(90分)。<b>解く順番は 1→4→5→2→3 がおすすめ</b>(仕訳と工業簿記で先に60点分を固める)。間違えた論点はこのアプリの復習モードへ。</p>
+      <p>💡 合格ラインは70点。満点を狙わず「第1問＋工業簿記で60点」を死守する戦略が効率的です。</p>
+    </div>
+  </details>
+</div>
+
+<!-- ============ 成績 ============ -->
+<div class="page" id="page-stats">
+  <h2 class="sec">成績元帳</h2>
+  <div class="card">
+    <div class="cat-stat"><div class="row"><span>🏪 商業簿記・仕訳</span><span id="rateShou">-</span></div><div class="bar"><div id="barShou" style="width:0%"></div></div></div>
+    <div class="cat-stat"><div class="row"><span>🏭 工業簿記・原価計算</span><span id="rateKou">-</span></div><div class="bar"><div id="barKou" style="width:0%"></div></div></div>
+    <div class="cat-stat"><div class="row"><span>📖 知識○×</span><span id="rateChi">-</span></div><div class="bar"><div id="barChi" style="width:0%"></div></div></div>
+  </div>
+  <div class="card" style="text-align:center">
+    <div style="font-size:12px;color:var(--muted);letter-spacing:.1em">累計獲得XP</div>
+    <div style="font-family:var(--display);font-size:34px;font-weight:800;color:var(--gold)" id="stXp">0</div>
+    <div style="font-size:12px;color:var(--muted)" id="stLv2">経理見習い</div>
+  </div>
+  <button class="btn ghost" onclick="resetData()" style="font-size:13px">成績をリセットする</button>
+  <p class="small-note">成績は自動保存されます(この端末・このアカウント)</p>
+</div>
+
+<!-- ============ 暗記カード ============ -->
+<div class="page" id="page-cards">
+  <div id="deckSelect">
+    <h2 class="sec">暗記カードで知識チャージ</h2>
+    <p style="font-size:12.5px;color:var(--muted);margin:0 2px 12px">カードをタップ→答えを確認→「覚えた!」で仕分け。覚えたカードは後ろに回り、苦手だけ効率よく回せます。</p>
+    <div id="deckList"></div>
+  </div>
+  <div id="cardStudy" style="display:none">
+    <div class="q-head">
+      <span class="q-prog" id="cProg"></span>
+      <span class="deck-done" id="cKnown"></span>
+    </div>
+    <div class="progressline"><div id="cBar" style="width:0%"></div></div>
+    <div class="flash" onclick="flipCard()">
+      <div class="flash-inner" id="flashInner">
+        <div class="flash-face front"><span class="flash-hint">タップして答えを見る</span><p id="cFront"></p></div>
+        <div class="flash-face back"><p id="cBack"></p></div>
+      </div>
+    </div>
+    <div class="card-actions">
+      <button class="btn ghost" onclick="markCard(false)">まだ 🤔</button>
+      <button class="btn" onclick="markCard(true)">覚えた! ✅</button>
+    </div>
+    <button class="btn ghost" style="font-size:13px;padding:11px" onclick="exitCards()">デッキ選択に戻る</button>
+  </div>
+</div>
+
+<!-- 判子スタンプ -->
+<div class="stamp-wrap" id="stampWrap">
+  <div class="stamp" id="stampEl"><span class="big" id="stampBig">正解</span><span class="small" id="stampSmall">検 収 済</span></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<nav>
+  <button class="active" data-p="home" onclick="showPage('home',this)"><span class="ic">🏠</span>ホーム</button>
+  <button data-p="quiz" onclick="startFromNav()"><span class="ic">✏️</span>学ぶ</button>
+  <button data-p="cards" onclick="showPage('cards',this)"><span class="ic">🎴</span>カード</button>
+  <button data-p="notes" onclick="showPage('notes',this)"><span class="ic">📒</span>まとめ</button>
+  <button data-p="stats" onclick="showPage('stats',this)"><span class="ic">📊</span>成績</button>
+</nav>
+</div>
+
+<script>
+/* =====================================================
+   問題データ(オリジナル練習問題)
+   cat: shou=商業簿記 / kou=工業簿記 / chi=知識○×
+===================================================== */
+const QUESTIONS = [
+/* ---------- 商業簿記・仕訳 ---------- */
+{id:"s01",cat:"shou",q:"商品 ¥100,000 をクレジット払いの条件で販売した。信販会社への手数料(販売代金の4%)は販売時に計上する。",
+ choices:["(借)クレジット売掛金 96,000・支払手数料 4,000 ／(貸)売上 100,000","(借)クレジット売掛金 100,000 ／(貸)売上 96,000・受取手数料 4,000","(借)売掛金 100,000 ／(貸)売上 100,000","(借)クレジット売掛金 100,000 ／(貸)売上 100,000"],ans:0,
+ exp:"手数料を販売時に計上する場合、売上は総額 ¥100,000 のまま、手数料 ¥4,000 を差し引いた ¥96,000 をクレジット売掛金とします。"},
+{id:"s02",cat:"shou",q:"得意先に対する売掛金 ¥200,000 について、電子記録債権の発生記録が行われた。",
+ choices:["(借)電子記録債権 200,000 ／(貸)売掛金 200,000","(借)売掛金 200,000 ／(貸)電子記録債権 200,000","(借)受取手形 200,000 ／(貸)売掛金 200,000","(借)電子記録債務 200,000 ／(貸)買掛金 200,000"],ans:0,
+ exp:"売掛金が電子記録債権という別の債権に変わるイメージ。手形と同じように譲渡や割引もできます。"},
+{id:"s03",cat:"shou",q:"決算につき、売掛金の期末残高 ¥500,000 に対して2%の貸倒引当金を差額補充法で設定する。貸倒引当金の決算整理前残高は ¥6,000 である。",
+ choices:["貸倒引当金繰入 4,000","貸倒引当金繰入 10,000","貸倒引当金繰入 6,000","貸倒引当金戻入 4,000"],ans:0,
+ exp:"設定額 500,000×2%＝10,000。すでに残高が 6,000 あるので、差額の <b>4,000 だけ繰り入れ</b>ます(差額補充法)。"},
+{id:"s04",cat:"shou",q:"期首に備品 ¥1,000,000 を取得した(耐用年数5年・残存価額ゼロ・200%定率法・間接法)。1年目の減価償却費はいくらか。",
+ choices:["¥400,000","¥200,000","¥360,000","¥500,000"],ans:0,
+ exp:"200%定率法の償却率＝1/5×200%＝0.4。1,000,000×0.4＝<b>400,000</b>。2年目は帳簿価額600,000×0.4で計算します。"},
+{id:"s05",cat:"shou",q:"備品(取得原価 ¥800,000、減価償却累計額 ¥720,000、間接法)を除却した。処分価値はゼロと見積もられた。",
+ choices:["(借)減価償却累計額 720,000・固定資産除却損 80,000 ／(貸)備品 800,000","(借)減価償却累計額 720,000・固定資産売却損 80,000 ／(貸)備品 800,000","(借)備品 800,000 ／(貸)減価償却累計額 720,000・固定資産除却益 80,000","(借)貯蔵品 80,000・減価償却累計額 720,000 ／(貸)備品 800,000"],ans:0,
+ exp:"帳簿価額 80,000 が除却損に。処分価値があれば「貯蔵品」で計上しますが、本問はゼロなので全額<b>固定資産除却損</b>です。"},
+{id:"s06",cat:"shou",q:"国庫補助金 ¥300,000 を受け取って取得した機械装置について、直接減額方式による圧縮記帳を行った。",
+ choices:["(借)固定資産圧縮損 300,000 ／(貸)機械装置 300,000","(借)機械装置 300,000 ／(貸)固定資産圧縮損 300,000","(借)国庫補助金受贈益 300,000 ／(貸)機械装置 300,000","(借)固定資産圧縮損 300,000 ／(貸)国庫補助金受贈益 300,000"],ans:0,
+ exp:"補助金受取時に計上した「国庫補助金受贈益」に対応させて、機械の帳簿価額を直接減らします。以後の減価償却は圧縮後の金額で計算します。"},
+{id:"s07",cat:"shou",q:"年額 ¥120,000・期間5年のファイナンス・リース契約を締結した(利子込み法)。リース取引開始時の仕訳は?",
+ choices:["(借)リース資産 600,000 ／(貸)リース債務 600,000","(借)リース資産 120,000 ／(貸)リース債務 120,000","(借)支払リース料 120,000 ／(貸)現金 120,000","(借)リース債務 600,000 ／(貸)リース資産 600,000"],ans:0,
+ exp:"利子込み法ではリース料総額 120,000×5年＝<b>600,000</b> で資産・負債を計上します。オペレーティング・リースなら支払時に「支払リース料」で費用処理です。"},
+{id:"s08",cat:"shou",q:"満期保有目的で額面 ¥1,000,000 の社債を ¥970,000 で取得した(償還期間5年・差額は金利の調整・定額法)。決算時の償却原価法の仕訳は?",
+ choices:["(借)満期保有目的債券 6,000 ／(貸)有価証券利息 6,000","(借)有価証券利息 6,000 ／(貸)満期保有目的債券 6,000","(借)満期保有目的債券 30,000 ／(貸)有価証券利息 30,000","仕訳なし(時価評価しない)"],ans:0,
+ exp:"差額 30,000 を5年で均等配分 → 毎期 <b>6,000</b> ずつ帳簿価額を増やし、相手科目は有価証券利息にします。"},
+{id:"s09",cat:"shou",q:"決算につき、売買目的有価証券(帳簿価額 ¥450,000)を時価 ¥480,000 に評価替えする。",
+ choices:["(借)売買目的有価証券 30,000 ／(貸)有価証券評価益 30,000","(借)有価証券評価損 30,000 ／(貸)売買目的有価証券 30,000","(借)売買目的有価証券 30,000 ／(貸)その他有価証券評価差額金 30,000","仕訳なし"],ans:0,
+ exp:"売買目的有価証券の評価差額は<b>当期の損益</b>(評価益・評価損)。その他有価証券なら純資産(評価差額金)に計上する点と区別しましょう。"},
+{id:"s10",cat:"shou",q:"外貨建ての売掛金 1,000ドル(取引時レート ¥110/ドル)がある。決算時レートは ¥108/ドルであった。決算時の仕訳は?",
+ choices:["(借)為替差損益 2,000 ／(貸)売掛金 2,000","(借)売掛金 2,000 ／(貸)為替差損益 2,000","(借)為替差損益 2,000 ／(貸)現金 2,000","仕訳なし(決済時に処理)"],ans:0,
+ exp:"110,000円 → 108,000円 に目減りするので<b>為替差損</b>。円高になると外貨建て資産(売掛金)は損、外貨建て負債(買掛金)は得になります。"},
+{id:"s11",cat:"shou",q:"決算につき、当期の負担に属する退職給付費用 ¥250,000 を見積計上した。",
+ choices:["(借)退職給付費用 250,000 ／(貸)退職給付引当金 250,000","(借)退職給付引当金 250,000 ／(貸)退職給付費用 250,000","(借)退職給付費用 250,000 ／(貸)現金 250,000","(借)給料 250,000 ／(貸)退職給付引当金 250,000"],ans:0,
+ exp:"将来の退職金の当期負担分を費用計上し、引当金を積み立てます。実際に退職金を支払ったときは引当金を取り崩します。"},
+{id:"s12",cat:"shou",q:"法人税等の中間申告を行い、¥180,000 を現金で納付した。",
+ choices:["(借)仮払法人税等 180,000 ／(貸)現金 180,000","(借)法人税等 180,000 ／(貸)現金 180,000","(借)未払法人税等 180,000 ／(貸)現金 180,000","(借)租税公課 180,000 ／(貸)現金 180,000"],ans:0,
+ exp:"中間納付は<b>仮払法人税等</b>。決算で年間の法人税等が確定したら、仮払分を差し引いた残りを「未払法人税等」とします。"},
+{id:"s13",cat:"shou",q:"決算につき、将来減算一時差異 ¥100,000 が発生した。法定実効税率30%として税効果会計を適用する。",
+ choices:["(借)繰延税金資産 30,000 ／(貸)法人税等調整額 30,000","(借)法人税等調整額 30,000 ／(貸)繰延税金資産 30,000","(借)繰延税金負債 30,000 ／(貸)法人税等調整額 30,000","(借)繰延税金資産 100,000 ／(貸)法人税等調整額 100,000"],ans:0,
+ exp:"将来「減算」＝将来の税金が減る権利 → <b>繰延税金資産</b>。金額は差異×税率＝100,000×30%＝30,000 です。"},
+{id:"s14",cat:"shou",q:"会社の設立にあたり株式を発行し、払込金 ¥5,000,000 が当座預金に振り込まれた。資本金は会社法が規定する最低額とする。",
+ choices:["(借)当座預金 5,000,000 ／(貸)資本金 2,500,000・資本準備金 2,500,000","(借)当座預金 5,000,000 ／(貸)資本金 5,000,000","(借)当座預金 5,000,000 ／(貸)資本金 2,500,000・利益準備金 2,500,000","(借)当座預金 5,000,000 ／(貸)資本金 4,000,000・資本準備金 1,000,000"],ans:0,
+ exp:"会社法の最低額＝払込金額の<b>2分の1</b>。残り半分は<b>資本準備金</b>(株式払込剰余金)です。利益準備金ではない点に注意!"},
+{id:"s15",cat:"shou",q:"株主総会で繰越利益剰余金から ¥1,000,000 の配当が決議された。資本金 ¥4,000,000、資本準備金 ¥600,000、利益準備金 ¥300,000 のとき、積み立てる利益準備金の額は?",
+ choices:["¥100,000","¥400,000","¥90,000","¥0"],ans:0,
+ exp:"①配当×1/10＝100,000 ②資本金×1/4−準備金合計＝1,000,000−900,000＝100,000。<b>小さい方</b>なのでどちらでも 100,000 です。"},
+{id:"s16",cat:"shou",q:"S社株式の80%を ¥800,000 で取得し支配を獲得した。支配獲得時のS社純資産のうち親会社持分は ¥700,000 であった。連結上生じる「のれん」を10年で均等償却する場合、年間償却額は?",
+ choices:["¥10,000","¥100,000","¥5,000","¥20,000"],ans:0,
+ exp:"のれん＝取得原価 800,000−親会社持分 700,000＝100,000。10年償却で年 <b>10,000</b>(のれん償却／のれん)。のれんは20年以内に償却します。"},
+{id:"s17",cat:"shou",q:"当社は資格試験の講座を運営している。受講料 ¥150,000 を前受けしていたが、本日、講座のサービス提供がすべて完了した。",
+ choices:["(借)契約負債 150,000 ／(貸)役務収益 150,000","(借)役務原価 150,000 ／(貸)役務収益 150,000","(借)現金 150,000 ／(貸)役務収益 150,000","(借)役務収益 150,000 ／(貸)契約負債 150,000"],ans:0,
+ exp:"サービス業では、前受け時に<b>契約負債(前受金)</b>、提供完了時に<b>役務収益</b>へ振り替えます。対応する費用は「役務原価」です。"},
+{id:"s18",cat:"shou",q:"かねて受け取っていた約束手形 ¥300,000 が不渡りとなり、償還請求費用 ¥5,000 を現金で支払った。",
+ choices:["(借)不渡手形 305,000 ／(貸)受取手形 300,000・現金 5,000","(借)貸倒損失 305,000 ／(貸)受取手形 300,000・現金 5,000","(借)不渡手形 300,000・支払手数料 5,000 ／(貸)受取手形 300,000・現金 5,000","(借)受取手形 305,000 ／(貸)不渡手形 300,000・現金 5,000"],ans:0,
+ exp:"不渡りになった手形は請求費用も含めて<b>不渡手形</b>勘定へ。まだ回収できる可能性があるので、すぐに貸倒損失にはしません。"},
+{id:"s19",cat:"shou",q:"銀行勘定調整表を作成したところ、「当社が振り出した小切手 ¥50,000 が銀行にまだ呈示されていない(未取付小切手)」ことが判明した。当社側で必要な修正仕訳は?",
+ choices:["仕訳なし(銀行側の残高を減算調整するのみ)","(借)当座預金 50,000 ／(貸)買掛金 50,000","(借)買掛金 50,000 ／(貸)当座預金 50,000","(借)当座預金 50,000 ／(貸)未払金 50,000"],ans:0,
+ exp:"未取付小切手は<b>銀行側の調整項目</b>なので当社の仕訳は不要。修正仕訳が必要なのは「連絡未達」「誤記入」「未渡小切手」など<b>当社側</b>の項目だけです。"},
+{id:"s20",cat:"shou",q:"決算につき、当期に販売した商品(無償修理の保証付き)について、売上高 ¥2,000,000 の1%を商品保証引当金として設定する。",
+ choices:["(借)商品保証引当金繰入 20,000 ／(貸)商品保証引当金 20,000","(借)商品保証引当金 20,000 ／(貸)商品保証引当金繰入 20,000","(借)修繕費 20,000 ／(貸)商品保証引当金 20,000","(借)商品保証引当金繰入 20,000 ／(貸)現金 20,000"],ans:0,
+ exp:"将来の修理費用に備える引当金。翌期に実際に修理したら「商品保証引当金」を取り崩します(引当金を超えた分は商品保証費)。"},
+/* ---------- 工業簿記 ---------- */
+{id:"k01",cat:"kou",q:"次のうち「間接材料費」に分類されるものはどれか。",
+ choices:["工場で使う機械油などの工場消耗品","製品の本体となる素材(主要材料)","外部から購入した部品(買入部品)","特定製品のために消費した原料"],ans:0,
+ exp:"素材・買入部品など「どの製品に使ったか分かる」ものは直接材料費。工場消耗品・消耗工具器具備品などは<b>間接材料費</b>です。"},
+{id:"k02",cat:"kou",q:"材料の予定消費価格は @¥100。当月の実際消費量は 500kg、実際消費額は ¥52,000 だった。材料消費価格差異は?",
+ choices:["¥2,000 の不利差異(借方差異)","¥2,000 の有利差異(貸方差異)","¥500 の不利差異","差異なし"],ans:0,
+ exp:"予定消費額 100×500＝50,000 に対して実際 52,000。実際の方が <b>2,000 多い＝不利差異</b>(借方差異)です。"},
+{id:"k03",cat:"kou",q:"直接工の予定賃率は @¥1,200。当月の実際直接作業時間は 100時間、実際賃金消費額は ¥124,000 だった。賃率差異は?",
+ choices:["¥4,000 の不利差異","¥4,000 の有利差異","¥24,000 の不利差異","¥2,000 の有利差異"],ans:0,
+ exp:"予定 1,200×100h＝120,000 に対して実際 124,000。実際が 4,000 多いので<b>不利差異</b>です。"},
+{id:"k04",cat:"kou",q:"製造間接費の年間予算は ¥3,600,000、基準操業度は年間 3,600 直接作業時間である。当月の実際直接作業時間が 280時間のとき、予定配賦額は?",
+ choices:["¥280,000","¥300,000","¥360,000","¥252,000"],ans:0,
+ exp:"予定配賦率＝3,600,000÷3,600h＝@1,000。予定配賦額＝1,000×280h＝<b>280,000</b>。実際発生額との差が製造間接費配賦差異になります。"},
+{id:"k05",cat:"kou",q:"固定製造間接費の月間予算 ¥200,000、基準操業度 200時間(固定費率 @¥1,000)。実際操業度が 190時間のとき、操業度差異は?",
+ choices:["¥10,000 の不利差異","¥10,000 の有利差異","¥190,000 の不利差異","差異なし"],ans:0,
+ exp:"操業度差異＝(実際190h−基準200h)×@1,000＝<b>△10,000(不利)</b>。設備をフル稼働できなかった分のムダを表す差異です。"},
+{id:"k06",cat:"kou",q:"平均法による単純総合原価計算。直接材料費(始点投入)は月初仕掛品 ¥20,000＋当月投入 ¥100,000。完成品 400個・月末仕掛品 100個のとき、月末仕掛品の直接材料費は?",
+ choices:["¥24,000","¥20,000","¥30,000","¥25,000"],ans:0,
+ exp:"平均法は合計してから按分：(20,000＋100,000)×100個/(400個＋100個)＝<b>24,000</b>。材料は始点投入なので進捗度は関係ありません。"},
+{id:"k07",cat:"kou",q:"総合原価計算における「加工費」の月末仕掛品原価の計算で使う数量は?",
+ choices:["月末仕掛品数量 × 加工進捗度(完成品換算量)","月末仕掛品数量そのまま","完成品数量 × 加工進捗度","当月投入数量そのまま"],ans:0,
+ exp:"加工費は作業が進むほど発生するので、<b>数量×進捗度＝完成品換算量</b>で按分します。始点投入の材料費は数量そのままです。"},
+{id:"k08",cat:"kou",q:"標準原価計算における直接材料費の「価格差異」の計算式として正しいものは?",
+ choices:["(標準単価 − 実際単価) × 実際消費量","(標準単価 − 実際単価) × 標準消費量","(標準消費量 − 実際消費量) × 実際単価","(標準消費量 − 実際消費量) × 標準単価"],ans:0,
+ exp:"価格差異は<b>実際消費量</b>ベース、数量差異は<b>標準単価</b>ベースで計算します。ボックス図(シュラッター図の材料版)で覚えると確実!"},
+{id:"k09",cat:"kou",q:"直接原価計算による損益計算書。売上高 ¥1,000,000、変動費 ¥600,000 のとき、貢献利益と貢献利益率は?",
+ choices:["貢献利益 400,000・貢献利益率 40%","貢献利益 600,000・貢献利益率 60%","貢献利益 400,000・貢献利益率 60%","貢献利益 1,000,000・貢献利益率 40%"],ans:0,
+ exp:"貢献利益＝売上−変動費＝400,000。率＝400,000÷1,000,000＝<b>40%</b>。ここから固定費を引くと営業利益です。"},
+{id:"k10",cat:"kou",q:"貢献利益率 40%、固定費 ¥300,000 のとき、損益分岐点売上高は?",
+ choices:["¥750,000","¥300,000","¥1,200,000","¥500,000"],ans:0,
+ exp:"損益分岐点売上高＝固定費÷貢献利益率＝300,000÷0.4＝<b>750,000</b>。利益がちょうどゼロになる売上高です。"},
+{id:"k11",cat:"kou",q:"貢献利益率 40%、固定費 ¥300,000 の会社が、目標営業利益 ¥100,000 を達成するために必要な売上高は?",
+ choices:["¥1,000,000","¥750,000","¥400,000","¥250,000"],ans:0,
+ exp:"(固定費＋目標利益)÷貢献利益率＝(300,000＋100,000)÷0.4＝<b>1,000,000</b>。固定費に目標利益を上乗せするだけ!"},
+{id:"k12",cat:"kou",q:"本社工場会計を採用している。工場が材料 ¥500,000 を掛けで購入した場合の【工場側】の仕訳は?(工場の帳簿には材料・賃金・製造間接費・仕掛品・製品・本社の勘定がある)",
+ choices:["(借)材料 500,000 ／(貸)本社 500,000","(借)材料 500,000 ／(貸)買掛金 500,000","(借)本社 500,000 ／(貸)材料 500,000","(借)仕掛品 500,000 ／(貸)本社 500,000"],ans:0,
+ exp:"工場の帳簿に「買掛金」勘定がないので、本社に代わりに処理してもらうイメージで貸方は<b>本社</b>勘定。本社側は(借)工場／(貸)買掛金です。"},
+{id:"k13",cat:"kou",q:"部門別原価計算の「直接配賦法」の説明として正しいものは?",
+ choices:["補助部門費を、他の補助部門を無視して製造部門にのみ配賦する","補助部門同士のサービスのやり取りも考慮して配賦する","補助部門費を配賦せず全額費用処理する","製造部門費を補助部門に配賦する"],ans:0,
+ exp:"直接配賦法は補助部門間のサービス提供を<b>無視</b>して、製造部門だけに配賦するシンプルな方法。考慮するのは相互配賦法です。"},
+{id:"k14",cat:"kou",q:"総合原価計算で正常仕損が【工程の終点】で発生した場合、仕損費は誰が負担するか。",
+ choices:["完成品のみが負担する","完成品と月末仕掛品の両方が負担する","月末仕掛品のみが負担する","異常仕損として営業外費用にする"],ans:0,
+ exp:"終点発生＝月末仕掛品はまだそこまで到達していない → <b>完成品のみ負担</b>。仕損の発生点が月末仕掛品の進捗度より前なら両者負担です。"},
+{id:"k15",cat:"kou",q:"当月の直接材料費 ¥300,000、直接労務費 ¥400,000、製造間接費配賦額 ¥200,000。月初仕掛品 ¥80,000、月末仕掛品 ¥100,000 のとき、当月の完成品原価(当月製品製造原価)は?",
+ choices:["¥880,000","¥900,000","¥920,000","¥820,000"],ans:0,
+ exp:"当月総製造費用＝300,000＋400,000＋200,000＝900,000。完成品原価＝月初 80,000＋900,000−月末 100,000＝<b>880,000</b>。仕掛品勘定のボックスで整理!"},
+/* ---------- 知識○× ---------- */
+{id:"c01",cat:"chi",q:"○×判定：連結会計で生じた「のれん」は、20年以内のその効果の及ぶ期間にわたって規則的に償却する。",
+ choices:["○ 正しい","× 誤り"],ans:0,
+ exp:"のれんは<b>20年以内</b>に定額法などで償却します。逆に「負ののれん」は発生した期の利益(負ののれん発生益)です。"},
+{id:"c02",cat:"chi",q:"○×判定：その他有価証券の評価差額は、当期の損益(有価証券評価損益)として処理する。",
+ choices:["× 誤り","○ 正しい"],ans:0,
+ exp:"その他有価証券の評価差額は損益ではなく、純資産の「<b>その他有価証券評価差額金</b>」で処理(全部純資産直入法)。当期の損益にするのは売買目的有価証券です。"},
+{id:"c03",cat:"chi",q:"○×判定：貸借対照表において、貸倒引当金は資産(売掛金など)から控除する形式で表示される。",
+ choices:["○ 正しい","× 誤り"],ans:0,
+ exp:"貸倒引当金は<b>評価勘定</b>で、資産のマイナスとして表示します。減価償却累計額も同じ仲間です。"},
+{id:"c04",cat:"chi",q:"○×判定：オペレーティング・リース取引では、リース資産とリース債務を計上せず、支払時に「支払リース料」として費用処理する。",
+ choices:["○ 正しい","× 誤り"],ans:0,
+ exp:"資産計上するのは<b>ファイナンス・リース</b>。オペレーティング・リースは賃貸借処理(支払リース料)です。"},
+{id:"c05",cat:"chi",q:"○×判定：連結財務諸表の作成では、親会社と子会社の間の売上高と仕入高は相殺消去する。",
+ choices:["○ 正しい","× 誤り"],ans:0,
+ exp:"グループ内部の取引は外部に売ったわけではないので相殺消去。債権債務(売掛金と買掛金など)も同様に消去します。"},
+{id:"c06",cat:"chi",q:"○×判定:「株主資本等変動計算書」は、貸借対照表の純資産の部の一会計期間における変動を表す書類である。",
+ choices:["○ 正しい","× 誤り"],ans:0,
+ exp:"配当・当期純利益・増資などによる純資産の増減を項目ごとに示します。第2問での出題が定番です。"},
+{id:"c07",cat:"chi",q:"○×判定：操業度差異は、変動製造間接費から生じる差異である。",
+ choices:["× 誤り","○ 正しい"],ans:0,
+ exp:"操業度差異は<b>固定費</b>から生じます(設備を遊ばせたムダ)。シュラッター図で固定費率×操業度の差として計算します。"},
+{id:"c08",cat:"chi",q:"○×判定：直接原価計算では、固定製造原価は製品原価に含めず、発生した期間の費用(期間原価)として全額処理する。",
+ choices:["○ 正しい","× 誤り"],ans:0,
+ exp:"これが直接原価計算の最大の特徴。全部原価計算との営業利益の差は「在庫に含まれる固定費」で説明できます。"},
+{id:"c09",cat:"chi",q:"○×判定：未渡小切手(作成したが相手に渡していない小切手)が見つかった場合、当社側で修正仕訳が必要である。",
+ choices:["○ 正しい","× 誤り"],ans:0,
+ exp:"未渡しなら当座預金はまだ減っていないので、(借)当座預金／(貸)買掛金 などと<b>戻す仕訳</b>が必要。銀行側調整の未取付小切手と混同注意!"},
+{id:"c10",cat:"chi",q:"○×判定：製造間接費を各製品に配賦する際の「予定配賦率」は、製造間接費の年間予算額を基準操業度で割って求める。",
+ choices:["○ 正しい","× 誤り"],ans:0,
+ exp:"予定配賦率＝年間予算÷基準操業度。これに実際操業度を掛けたものが予定配賦額です。"},
+];
+
+/* =====================================================
+   暗記カードデータ(知識インプット用)
+===================================================== */
+const DECKS=[
+  {id:"kamoku",em:"🗂️",name:"勘定科目と表示区分",desc:"どの科目がどこに載る?"},
+  {id:"shouyo",em:"🏪",name:"商業簿記キーワード",desc:"論点の意味を一言で説明できる?"},
+  {id:"kougyo",em:"🏭",name:"工業簿記キーワード",desc:"原価計算の考え方を固める"},
+  {id:"suuji",em:"🔢",name:"数字・公式の暗記",desc:"試験で即使う数字と式"},
+];
+const CARDS=[
+/* --- 勘定科目 --- */
+{id:"a01",deck:"kamoku",f:"クレジット売掛金",b:"【B/S・資産(流動)】\n信販会社に対する債権。通常の売掛金と区別して表示し、貸倒引当金の設定対象にもなる。"},
+{id:"a02",deck:"kamoku",f:"電子記録債権・電子記録債務",b:"【資産／負債】\n手形の電子版。手形と同じように譲渡・割引ができる。割引時の差額は「電子記録債権売却損」。"},
+{id:"a03",deck:"kamoku",f:"のれん",b:"【B/S・無形固定資産】\n企業の買収額と純資産(時価)の差額。20年以内に定額法などで償却し、「のれん償却」は販管費に表示。"},
+{id:"a04",deck:"kamoku",f:"ソフトウェア",b:"【B/S・無形固定資産】\n自社利用目的のものは利用可能期間(原則5年)で定額法償却。残存価額ゼロ・記帳は直接法。"},
+{id:"a05",deck:"kamoku",f:"繰延税金資産",b:"【B/S・投資その他の資産】\n将来の税金を減らす効果を資産計上したもの。将来減算一時差異×法定実効税率で計算。"},
+{id:"a06",deck:"kamoku",f:"契約負債",b:"【B/S・負債】\nサービス提供前に受け取った対価(前受け)。サービス提供が完了(または進捗)したら「役務収益」へ振り替える。"},
+{id:"a07",deck:"kamoku",f:"国庫補助金受贈益／固定資産圧縮損",b:"【P/L・特別利益／特別損失】\n圧縮記帳のペア。補助金を受け取ったら受贈益、直接減額方式で資産を減らしたら圧縮損。"},
+{id:"a08",deck:"kamoku",f:"為替差損益",b:"【P/L・営業外】\n外貨建ての資産・負債を決算時レートで換算替えしたときの差額。差益なら営業外収益、差損なら営業外費用。"},
+{id:"a09",deck:"kamoku",f:"法人税等調整額",b:"【P/L・法人税等の直後】\n税効果会計で「会計上あるべき税金費用」に調整するための科目。繰延税金資産・負債の相手科目。"},
+{id:"a10",deck:"kamoku",f:"別段預金",b:"【B/S・資産】\n増資のときの株式申込証拠金の預け先。払込期日に資本金へ振り替え、当座預金などに移す。"},
+/* --- 商業簿記 --- */
+{id:"b01",deck:"shouyo",f:"償却原価法(定額法)",b:"満期保有目的債券で、額面と取得価額の差(＝金利の調整)を満期まで毎期均等に帳簿価額へ加減する方法。\n相手科目は「有価証券利息」。"},
+{id:"b02",deck:"shouyo",f:"差額補充法",b:"貸倒引当金の設定方法。\n設定額(期末債権×率)−引当金残高＝繰入額。\n残高の方が多ければ「貸倒引当金戻入」。"},
+{id:"b03",deck:"shouyo",f:"圧縮記帳(直接減額方式)",b:"国庫補助金などで取得した固定資産を、補助金相当額だけ直接減額して課税を繰り延べる処理。\n以後の減価償却は圧縮後の帳簿価額で計算する。"},
+{id:"b04",deck:"shouyo",f:"将来減算一時差異",b:"将来、税金が減る方向のズレ。\n例:貸倒引当金の損金不算入、減価償却の償却限度超過額。\n→ 繰延税金資産／法人税等調整額 を計上。"},
+{id:"b05",deck:"shouyo",f:"非支配株主持分",b:"子会社の資本のうち、親会社以外の株主の取り分。\n連結B/Sの純資産の部に表示。子会社の当期純利益のうち持分割合分は「非支配株主に帰属する当期純利益」へ。"},
+{id:"b06",deck:"shouyo",f:"ダウンストリームとアップストリーム",b:"ダウン:親→子への販売。未実現利益は全額消去(親が負担)。\nアップ:子→親への販売。未実現利益の消去額を非支配株主にも持分割合で負担させる。"},
+{id:"b07",deck:"shouyo",f:"未渡小切手",b:"小切手を作成したが相手にまだ渡していない状態。\n当座預金はまだ減っていないので【当社側の修正仕訳が必要】。\n(借)当座預金／(貸)買掛金・未払金など。"},
+{id:"b08",deck:"shouyo",f:"未取付小切手",b:"渡した小切手が銀行にまだ呈示されていない状態。\n【銀行側の残高調整のみ・仕訳不要】。\n「未渡し=仕訳あり／未取付=仕訳なし」で対比して覚える!"},
+{id:"b09",deck:"shouyo",f:"株主資本等変動計算書",b:"純資産の部の一会計期間の変動を項目別に示す書類。\n主な変動:剰余金の配当、準備金の積立、当期純利益、増資。第2問の頻出論点。"},
+{id:"b10",deck:"shouyo",f:"サービス業の収益認識",b:"前受け時:契約負債(前受金)\n提供完了時:役務収益へ振替\n対応する費用:役務原価\n(仕掛中の費用は「仕掛品」に集計してから役務原価へ)"},
+/* --- 工業簿記 --- */
+{id:"c01k",deck:"kougyo",f:"製造原価の3分類",b:"材料費・労務費・経費。\nさらに「どの製品に使ったか分かる=直接費」「分からない=間接費」に分かれる。間接費はいったん製造間接費に集計して配賦する。"},
+{id:"c02k",deck:"kougyo",f:"予定配賦率",b:"製造間接費の年間予算 ÷ 基準操業度。\n予定配賦額 ＝ 予定配賦率 × 実際操業度。\n実際発生額との差が「製造間接費配賦差異」。"},
+{id:"c03k",deck:"kougyo",f:"シュラッター図",b:"製造間接費の差異を「予算差異」と「操業度差異」に分解する図。\n予算差異＝予算許容額−実際発生額\n操業度差異＝(実際−基準操業度)×固定費率"},
+{id:"c04k",deck:"kougyo",f:"完成品換算量",b:"数量 × 加工進捗度。\n加工費の按分に使う数量。\n始点投入の直接材料費は進捗に関係なく「数量そのまま」で按分する点と対比!"},
+{id:"c05k",deck:"kougyo",f:"平均法と先入先出法(総合原価計算)",b:"平均法:月初仕掛品＋当月投入を合算してから按分。\n先入先出法:月初分は先に完成品へ。月末仕掛品は当月投入分の単価だけで計算。"},
+{id:"c06k",deck:"kougyo",f:"正常仕損費の負担",b:"仕損の発生点で判断!\n終点(または月末仕掛品の進捗度より後)で発生 → 完成品のみ負担。\n月末仕掛品の進捗度より前で発生 → 完成品と月末仕掛品の両者負担。"},
+{id:"c07k",deck:"kougyo",f:"直接原価計算",b:"変動費だけを製品原価にする方法。\n固定製造原価は期間原価として発生額を全額費用処理。\nP/Lは 売上高−変動費=貢献利益−固定費=営業利益 の形。"},
+{id:"c08k",deck:"kougyo",f:"貢献利益",b:"売上高 − 変動費。\n「固定費を回収して利益を生む源泉」。\n貢献利益率(貢献利益÷売上高)はCVP分析のすべての公式で使う最重要の率。"},
+{id:"c09k",deck:"kougyo",f:"本社工場会計",b:"工場の帳簿にない勘定(買掛金・売掛金など)の代わりに「本社」勘定を使う。\n本社側では「工場」勘定。本社と工場の勘定残高は貸借逆で一致する。"},
+{id:"c10k",deck:"kougyo",f:"原価差異の会計処理(原則)",b:"不利差異(借方差異)→ 売上原価に加算。\n有利差異(貸方差異)→ 売上原価から減算。\n「実際にかかった分に合わせる」イメージで覚える。"},
+/* --- 数字・公式 --- */
+{id:"d01",deck:"suuji",f:"合格点と配点構成",b:"100点満点・70点で合格。\n商業簿記60点(第1問 仕訳20点＋第2問20点＋第3問20点)\n工業簿記40点(第4問28点＋第5問12点)"},
+{id:"d02",deck:"suuji",f:"配当時の準備金積立額",b:"配当額 × 1/10。\nただし上限あり:資本金×1/4 −(資本準備金＋利益準備金)。\n両方計算して小さい方を積み立てる。"},
+{id:"d03",deck:"suuji",f:"200%定率法の償却率",b:"1 ÷ 耐用年数 × 200%。\n例:耐用年数5年 → 0.4、8年 → 0.25。\n毎年「期首帳簿価額×償却率」で計算(取得原価ではない!)。"},
+{id:"d04",deck:"suuji",f:"のれんの償却期間",b:"20年以内のその効果の及ぶ期間で、定額法などにより規則的に償却。\n負ののれんは償却せず、発生した期の特別利益(負ののれん発生益)。"},
+{id:"d05",deck:"suuji",f:"資本金への組入額",b:"原則:払込金額の全額を資本金。\n容認(最低額):払込金額の1/2。残りは資本準備金(株式払込剰余金)。\n「会社法が規定する最低額」ときたら1/2!"},
+{id:"d06",deck:"suuji",f:"損益分岐点の公式セット",b:"損益分岐点売上高＝固定費÷貢献利益率\n目標利益達成売上高＝(固定費＋目標利益)÷貢献利益率\n安全余裕率＝(売上高−損益分岐点売上高)÷売上高"},
+{id:"d07",deck:"suuji",f:"操業度差異の公式",b:"(実際操業度 − 基準操業度) × 固定費率。\nマイナスなら不利差異(借方)。\n固定費から生じる差異である点も頻出の知識!"},
+{id:"d08",deck:"suuji",f:"価格差異と数量差異",b:"価格差異＝(標準単価−実際単価)×実際消費量\n数量差異＝(標準消費量−実際消費量)×標準単価\n「価格は実際数量・数量は標準単価」とセットで暗記。"},
+];
+
+/* ===================================================== 進捗データ ===================================================== */
+/* 問題ID → まとめタブの該当セクション */
+const NOTE_MAP={
+ s01:"note-shiwake",s02:"note-shiwake",s03:"note-shiwake",s04:"note-shiwake",s05:"note-shiwake",
+ s06:"note-shiwake",s07:"note-shiwake",s08:"note-yuka",s09:"note-yuka",s10:"note-shiwake",
+ s11:"note-shiwake",s12:"note-shiwake",s13:"note-shiwake",s14:"note-shihon",s15:"note-shihon",
+ s16:"note-renketsu",s17:"note-shiwake",s18:"note-shiwake",s19:"note-ginkou",s20:"note-shiwake",
+ k01:"note-himoku",k02:"note-himoku",k03:"note-himoku",k04:"note-sai",k05:"note-sai",
+ k06:"note-sougou",k07:"note-sougou",k08:"note-sai",k09:"note-cvp",k10:"note-cvp",
+ k11:"note-cvp",k12:"note-himoku",k13:"note-himoku",k14:"note-sougou",k15:"note-himoku",
+ c01:"note-renketsu",c02:"note-yuka",c03:"note-shiwake",c04:"note-shiwake",c05:"note-renketsu",
+ c06:"note-shihon",c07:"note-sai",c08:"note-cvp",c09:"note-ginkou",c10:"note-sai"
+};
+function goNote(id){
+  showPage("notes",document.querySelector('nav button[data-p="notes"]'));
+  document.querySelectorAll("details.acc").forEach(d=>{d.removeAttribute("open");d.classList.remove("hl")});
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.setAttribute("open","");
+  void el.offsetWidth;el.classList.add("hl");
+  setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),100);
+}
+const CAT_NAME={shou:"商業簿記",kou:"工業簿記",chi:"知識○×",rev:"復習"};
+const LEVELS=[
+  {xp:0,name:"経理見習い"},{xp:100,name:"仕訳修行中"},{xp:250,name:"経理担当"},
+  {xp:450,name:"経理主任"},{xp:700,name:"経理課長"},{xp:1000,name:"経理部長"},
+  {xp:1400,name:"財務のプロ"},{xp:2000,name:"簿記2級マスター"}
+];
+let P={xp:0,best:0,total:0,correct:0,wrong:[],known:[],days:0,lastDay:"",cats:{shou:[0,0],kou:[0,0],chi:[0,0]}};
+let memoryOnly=false;
+
+async function loadP(){
+  try{
+    if(!window.storage){memoryOnly=true;return}
+    const r=await window.storage.get("boki2-progress");
+    if(r&&r.value){const d=JSON.parse(r.value);P=Object.assign(P,d);}
+  }catch(e){/* 初回は未保存のためエラーになる:そのまま初期値 */}
+  if(!Array.isArray(P.known))P.known=[];
+}
+async function saveP(){
+  try{ if(!memoryOnly&&window.storage) await window.storage.set("boki2-progress",JSON.stringify(P)); }catch(e){console.error(e)}
+}
+
+/* ===================================================== 画面制御 ===================================================== */
+function showPage(p,btn){
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("show"));
+  document.getElementById("page-"+p).classList.add("show");
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  else{const nb=document.querySelector('nav button[data-p="'+(p==="quiz"||p==="result"?"quiz":p)+'"]');if(nb)nb.classList.add("active")}
+  if(p==="home")renderHome();
+  if(p==="stats")renderStats();
+  if(p==="cards")exitCards();
+  window.scrollTo(0,0);
+}
+function goHome(){showPage("home",document.querySelector('nav button[data-p="home"]'))}
+function startFromNav(){
+  if(quiz.list.length&&quiz.i<quiz.list.length){showPage("quiz")}
+  else goHome(),toast("カテゴリを選んでスタート!");
+}
+function toast(msg){
+  const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),1800);
+}
+
+/* ===================================================== ホーム描画 ===================================================== */
+function levelInfo(xp){
+  let li=0;for(let i=0;i<LEVELS.length;i++){if(xp>=LEVELS[i].xp)li=i}
+  const cur=LEVELS[li],next=LEVELS[li+1];
+  return {name:cur.name,pct:next?Math.min(100,(xp-cur.xp)/(next.xp-cur.xp)*100):100,remain:next?next.xp-xp:0,max:!next};
+}
+function renderHome(){
+  const L=levelInfo(P.xp);
+  document.getElementById("lvName").textContent=L.name;
+  document.getElementById("xpBar").style.width=L.pct+"%";
+  document.getElementById("xpNow").textContent=P.xp+" XP";
+  document.getElementById("xpNext").textContent=L.max?"最高位に到達!":"次の昇進まで "+L.remain+" XP";
+  document.getElementById("stTotal").textContent=P.total;
+  document.getElementById("stRate").textContent=P.total?Math.round(P.correct/P.total*100)+"%":"-";
+  document.getElementById("stStreak").textContent=P.best;
+  document.getElementById("stDays").textContent=P.days||0;
+  document.getElementById("cntShou").textContent=QUESTIONS.filter(q=>q.cat==="shou").length+"問";
+  document.getElementById("cntKou").textContent=QUESTIONS.filter(q=>q.cat==="kou").length+"問";
+  document.getElementById("cntChi").textContent=QUESTIONS.filter(q=>q.cat==="chi").length+"問";
+  document.getElementById("cntRev").textContent=P.wrong.length+"問";
+  document.getElementById("cntCards").textContent="覚えた "+P.known.length+"/"+CARDS.length;
+}
+function renderStats(){
+  const map={shou:["rateShou","barShou"],kou:["rateKou","barKou"],chi:["rateChi","barChi"]};
+  for(const c in map){
+    const[correct,total]=P.cats[c];
+    const r=total?Math.round(correct/total*100):null;
+    document.getElementById(map[c][0]).textContent=r===null?"未挑戦":r+"%（"+correct+"/"+total+"）";
+    document.getElementById(map[c][1]).style.width=(r||0)+"%";
+  }
+  document.getElementById("stXp").textContent=P.xp;
+  document.getElementById("stLv2").textContent=levelInfo(P.xp).name;
+}
+async function resetData(){
+  if(!confirm("成績・XPをすべてリセットします。よろしいですか?"))return;
+  P={xp:0,best:0,total:0,correct:0,wrong:[],known:[],days:0,lastDay:"",cats:{shou:[0,0],kou:[0,0],chi:[0,0]}};
+  await saveP();renderStats();renderHome();toast("リセットしました");
+}
+
+/* ===================================================== クイズ ===================================================== */
+let quiz={list:[],i:0,score:0,combo:0,gained:0,cat:"",missed:[]};
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+
+function startQuiz(cat){
+  let pool;
+  if(cat==="rev"){
+    pool=QUESTIONS.filter(q=>P.wrong.includes(q.id));
+    if(!pool.length){toast("復習する問題はありません 🎉");return}
+  }else pool=QUESTIONS.filter(q=>q.cat===cat);
+  quiz={list:shuffle(pool).slice(0,10),i:0,score:0,combo:0,gained:0,cat:cat,missed:[]};
+  showPage("quiz");renderQ();
+}
+function retrySame(){startQuiz(quiz.cat)}
+function quitQuiz(){quiz={list:[],i:0,score:0,combo:0,gained:0,cat:"",missed:[]};goHome()}
+
+function renderQ(){
+  const q=quiz.list[quiz.i];
+  document.getElementById("qProg").textContent="第 "+(quiz.i+1)+" 問 / "+quiz.list.length;
+  document.getElementById("qBar").style.width=(quiz.i/quiz.list.length*100)+"%";
+  document.getElementById("qCombo").textContent=quiz.combo>=2?"🔥 "+quiz.combo+"連続正解中":"";
+  const tag=document.getElementById("qTag");
+  const realCat=q.cat;
+  tag.className="tag "+(quiz.cat==="rev"?"rev":realCat);
+  tag.textContent=(quiz.cat==="rev"?"復習｜":"")+CAT_NAME[realCat];
+  document.getElementById("qText").textContent=q.q;
+  document.getElementById("qExp").style.display="none";
+  document.getElementById("qNext").style.display="none";
+  const box=document.getElementById("qChoices");box.innerHTML="";
+  const order=shuffle(q.choices.map((c,idx)=>({c,idx})));
+  order.forEach(o=>{
+    const b=document.createElement("button");
+    b.className="choice";b.textContent=o.c;
+    b.onclick=()=>answer(o.idx===q.ans,b,q);
+    box.appendChild(b);
+  });
+  window.scrollTo(0,0);
+}
+function stamp(ok){stampShow(ok?"正解":"再検",ok?"検 収 済":"要 復 習",ok?"":"miss")}
+function stampShow(big,small,cls){
+  const w=document.getElementById("stampWrap"),el=document.getElementById("stampEl");
+  document.getElementById("stampBig").textContent=big;
+  document.getElementById("stampSmall").textContent=small;
+  el.classList.remove("miss","promo");if(cls)el.classList.add(cls);
+  el.classList.remove("go");void el.offsetWidth;
+  w.style.display="flex";el.classList.add("go");
+  setTimeout(()=>{w.style.display="none"},cls==="promo"?1400:850);
+}
+function levelIdx(xp){let li=0;for(let i=0;i<LEVELS.length;i++){if(xp>=LEVELS[i].xp)li=i}return li}
+function checkPromotion(prevXp){
+  if(levelIdx(P.xp)>levelIdx(prevXp)){
+    const name=LEVELS[levelIdx(P.xp)].name;
+    setTimeout(()=>{stampShow("昇進","「"+name+"」に就任",  "promo");toast("🎊 昇進!あなたは今日から「"+name+"」");confetti(14);},950);
+  }
+}
+function confetti(n){
+  const ems=["🎉","🎊","✨","🌸","📗","🪙"];
+  for(let i=0;i<n;i++){
+    const s=document.createElement("span");
+    s.className="confetti";s.textContent=ems[i%ems.length];
+    s.style.left=(Math.random()*96)+"vw";
+    s.style.animationDuration=(1.8+Math.random()*1.6)+"s";
+    s.style.animationDelay=(Math.random()*0.6)+"s";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),4200);
+  }
+}
+function dstr(d){return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+function touchStreak(){
+  const today=dstr(new Date());
+  if(P.lastDay===today)return;
+  const yest=dstr(new Date(Date.now()-86400000));
+  P.days=(P.lastDay===yest)?(P.days||0)+1:1;
+  P.lastDay=today;
+  if(P.days>=2)toast("🔥 連続学習 "+P.days+" 日目!");
+}
+async function answer(ok,btn,q){
+  const buttons=document.querySelectorAll("#qChoices .choice");
+  buttons.forEach(b=>{b.disabled=true;if(b!==btn)b.classList.add("dim")});
+  // 正解の選択肢を表示
+  buttons.forEach(b=>{if(b.textContent===q.choices[q.ans])b.classList.add("correct"),b.classList.remove("dim")});
+  if(!ok)btn.classList.add("wrong");
+  stamp(ok);
+  const prevXp=P.xp;
+  touchStreak();
+  P.total++;P.cats[q.cat][1]++;
+  if(ok){
+    quiz.score++;quiz.combo++;P.correct++;P.cats[q.cat][0]++;
+    if(quiz.combo>P.best)P.best=quiz.combo;
+    const bonus=Math.min((quiz.combo-1)*2,10);
+    quiz.gained+=10+bonus;P.xp+=10+bonus;
+    P.wrong=P.wrong.filter(id=>id!==q.id);
+  }else{
+    quiz.combo=0;
+    if(!P.wrong.includes(q.id))P.wrong.push(q.id);
+    if(!quiz.missed.includes(q.id))quiz.missed.push(q.id);
+  }
+  const exp=document.getElementById("qExp");
+  let html="<b>💡 解説</b><br>"+q.exp;
+  if(NOTE_MAP[q.id])html+='<br><button class="notelink" onclick="goNote(\''+NOTE_MAP[q.id]+'\')">📒 まとめタブで論点を復習 ▶</button>';
+  exp.innerHTML=html;
+  exp.style.display="block";
+  const nx=document.getElementById("qNext");
+  nx.textContent=quiz.i+1<quiz.list.length?"次の問題へ ▶":"結果を見る 📋";
+  nx.style.display="block";
+  checkPromotion(prevXp);
+  await saveP();
+}
+function nextQ(){
+  quiz.i++;
+  if(quiz.i<quiz.list.length)renderQ();
+  else showResult();
+}
+function showResult(){
+  document.getElementById("rScore").innerHTML=quiz.score+"<span> / "+quiz.list.length+"</span>";
+  document.getElementById("rGain").textContent="＋"+quiz.gained+" XP 獲得!";
+  const rate=quiz.score/quiz.list.length;
+  let msg;
+  if(rate===1)msg="全問正解!監査もびっくりの完璧な帳簿です 🎉";
+  else if(rate>=0.7)msg="合格ライン(70%)クリア!この調子で反復しましょう 💪";
+  else if(rate>=0.4)msg="あと少し!間違えた問題は復習モードで待っています 📖";
+  else msg="まだ伸びしろだらけ!まとめタブで論点を確認してから再挑戦 🔥";
+  document.getElementById("rMsg").textContent=msg;
+  const rw=document.getElementById("rWrong");
+  if(quiz.missed.length){
+    let h='<h4 style="font-size:12.5px;color:var(--stamp-red);margin:14px 0 4px;letter-spacing:.06em">要復習の論点</h4>';
+    quiz.missed.forEach(id=>{
+      const q=QUESTIONS.find(x=>x.id===id);if(!q)return;
+      const short=q.q.length>42?q.q.slice(0,42)+"…":q.q;
+      h+='<div class="wrong-item"><span class="wq">'+short+'</span>';
+      if(NOTE_MAP[id])h+='<button class="notelink" onclick="goNote(\''+NOTE_MAP[id]+'\')">📒 まとめで確認</button>';
+      h+='</div>';
+    });
+    rw.innerHTML=h;
+  }else rw.innerHTML="";
+  if(rate===1)confetti(26);
+  showPage("result");
+  quiz.list=[];
+}
+
+/* ===================================================== 暗記カード ===================================================== */
+let cardS={list:[],i:0,deck:null,newly:0};
+
+function renderDecks(){
+  const box=document.getElementById("deckList");box.innerHTML="";
+  DECKS.forEach(d=>{
+    const all=CARDS.filter(c=>c.deck===d.id);
+    const known=all.filter(c=>P.known.includes(c.id)).length;
+    const b=document.createElement("button");
+    b.className="cat-btn";
+    b.innerHTML='<span class="em">'+d.em+'</span><span><span class="t">'+d.name+'</span><br><span class="d">'+d.desc+'</span></span><span class="cnt">'+known+"/"+all.length+"</span>";
+    b.onclick=()=>startDeck(d);
+    box.appendChild(b);
+  });
+}
+function startDeck(d){
+  const all=CARDS.filter(c=>c.deck===d.id);
+  const unknown=shuffle(all.filter(c=>!P.known.includes(c.id)));
+  const known=shuffle(all.filter(c=>P.known.includes(c.id)));
+  cardS={list:[...unknown,...known],i:0,deck:d,newly:0}; // まだのカードを先に出す
+  document.getElementById("deckSelect").style.display="none";
+  document.getElementById("cardStudy").style.display="block";
+  renderCard();
+}
+function renderCard(){
+  const c=cardS.list[cardS.i];
+  const inner=document.getElementById("flashInner");
+  inner.style.transition="none";inner.classList.remove("flip");
+  void inner.offsetWidth;inner.style.transition="";
+  document.getElementById("cFront").textContent=c.f;
+  document.getElementById("cBack").innerHTML=c.b.replace(/\n/g,"<br>");
+  document.getElementById("cProg").textContent=(cardS.i+1)+" / "+cardS.list.length+"枚｜"+cardS.deck.name;
+  const knownCnt=CARDS.filter(x=>x.deck===cardS.deck.id&&P.known.includes(x.id)).length;
+  document.getElementById("cKnown").textContent="覚えた "+knownCnt+"枚";
+  document.getElementById("cBar").style.width=(cardS.i/cardS.list.length*100)+"%";
+}
+function flipCard(){document.getElementById("flashInner").classList.toggle("flip")}
+async function markCard(known){
+  const c=cardS.list[cardS.i];
+  if(known&&!P.known.includes(c.id)){
+    const prevXp=P.xp;
+    P.known.push(c.id);P.xp+=3;cardS.newly++;
+    touchStreak();
+    toast("覚えた! ＋3 XP 🎴");
+    checkPromotion(prevXp);
+  }
+  if(!known)P.known=P.known.filter(id=>id!==c.id);
+  await saveP();
+  cardS.i++;
+  if(cardS.i<cardS.list.length)renderCard();
+  else{
+    const all=CARDS.filter(x=>x.deck===cardS.deck.id);
+    const done=all.every(x=>P.known.includes(x.id));
+    toast(done?"デッキ完全制覇!おめでとう 🏆":"1周完了!「まだ」のカードをまた回そう 🔁");
+    exitCards();
+  }
+}
+function exitCards(){
+  document.getElementById("cardStudy").style.display="none";
+  document.getElementById("deckSelect").style.display="block";
+  renderDecks();
+}
+
+/* ===================================================== 初期化 ===================================================== */
+(async()=>{await loadP();renderHome();})();
+</script>
+</body>
+</html>
