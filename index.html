@@ -1024,8 +1024,9 @@ function renderCard(){
 }
 function flipCard(){document.getElementById("flashInner").classList.toggle("flip")}
 async function markCard(known){
-  alert("markCard動いた");
+  alert("①開始");
   const c=cardS.list[cardS.i];
+  alert("②カード取得");
 if(known){
 
   const prevXp=P.xp;
